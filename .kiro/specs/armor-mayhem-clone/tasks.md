@@ -105,6 +105,7 @@
     - _Requirements: All_
 
 
+
 - [ ] 6. Implement PhysicsSystem
   - [ ] 6.1 Create PhysicsSystem class with gravity and collision
     - Implement gravity application to entities
@@ -116,6 +117,8 @@
   
   - [ ]* 6.2 Write unit tests for physics calculations
     - Test gravity, collision detection, and friction
+
+
     - _Requirements: 5.1, 5.2, 5.3_
 
 - [ ] 7. Implement CollisionSystem
@@ -128,9 +131,13 @@
 
     - _Requirements: 5.4, 5.5_
   
+
+
   - [ ]* 7.2 Write unit tests for collision detection
     - Test AABB overlap detection with various scenarios
     - _Requirements: 5.4, 5.5_
+
+
 
 - [ ] 8. Implement weapon system and definitions
   - [ ] 8.1 Create WeaponDef interface and weapon data
@@ -142,11 +149,14 @@
     - Implement fire rate limiting with cooldown tracking
     - Implement magazine and ammo tracking
     - Implement reload mechanics with timer
+
+
     - Implement projectile spawning with spread for shotgun
     - Implement weapon switching logic
     - _Requirements: 2.2, 2.3, 2.4, 2.5_
   
-  - [ ]* 8.3 Write unit tests for weapon mechanics
+  - [-]* 8.3 Write unit tests for weapon mechanics
+
     - Test fire rate limiting, reload timing, and ammo tracking
     - _Requirements: 2.2, 2.3, 2.4_
 
@@ -158,7 +168,8 @@
     - Implement onHit() method for collision response
     - _Requirements: 5.4_
   
-  - [ ] 9.2 Implement object pool for projectiles
+  - [x] 9.2 Implement object pool for projectiles
+
     - Create ProjectilePool class with pre-allocated projectiles
     - Implement acquire() and release() methods
     - Integrate pool with WeaponSystem
@@ -170,7 +181,8 @@
     - _Requirements: 5.4_
 
 - [ ] 10. Implement Player entity
-  - [ ] 10.1 Create Player class extending Entity
+  - [-] 10.1 Create Player class extending Entity
+
     - Implement properties: health, maxHealth, moveSpeed, jumpForce, currentWeapon, weapons, grounded, aimAngle
     - Implement movement with smooth acceleration (WASD input)
     - Implement variable jump height based on space key hold duration
