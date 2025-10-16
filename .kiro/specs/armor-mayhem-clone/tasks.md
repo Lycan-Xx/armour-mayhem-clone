@@ -198,7 +198,8 @@
     - _Requirements: 1.1, 1.2, 1.3_
 
 - [ ] 11. Implement Enemy entity with AI
-  - [ ] 11.1 Create Enemy class extending Entity
+  - [x] 11.1 Create Enemy class extending Entity
+
 
 
     - Implement properties: health, aiState, sightRadius, attackRange, patrolPoints, currentPatrolIndex, attackCooldown
@@ -214,8 +215,10 @@
     - Test state transitions and behavior logic
     - _Requirements: 4.1, 4.2, 4.3, 4.4_
 
+
 - [ ] 12. Implement ParticleSystem with object pooling
   - [ ] 12.1 Create Particle class and ParticleSystem
+
     - Implement Particle with position, velocity, lifetime, color, size
     - Implement ParticleSystem with particle pool
     - Implement muzzle flash effect spawning
