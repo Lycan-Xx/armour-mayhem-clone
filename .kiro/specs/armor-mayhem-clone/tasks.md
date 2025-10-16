@@ -40,8 +40,20 @@
     - Create EntityID type, GameState enum, and common interfaces
     - _Requirements: All_
 
-- [ ] 3. Implement InputManager
-  - [ ] 3.1 Create InputManager class with keyboard and mouse tracking
+- [x] 3. Implement InputManager
+
+
+
+
+
+
+
+  - [x] 3.1 Create InputManager class with keyboard and mouse tracking
+
+
+
+
+
     - Implement key state tracking with Map<string, boolean>
     - Implement mouse position tracking relative to canvas
     - Implement mouse button state tracking
@@ -53,32 +65,45 @@
     - Test key state tracking and mouse position calculations
     - _Requirements: 1.1, 1.2, 1.3_
     
-- [ ] 4. Implement GameLoop with fixed timestep
-  - [ ] 4.1 Create GameLoop class with accumulator pattern
+- [x] 4. Implement GameLoop with fixed timestep
+
+  - [x] 4.1 Create GameLoop class with accumulator pattern
+
+
+
     - Implement fixed 60Hz update rate (16.67ms timestep)
     - Implement accumulator for frame time handling
     - Calculate interpolation alpha for smooth rendering
     - Use requestAnimationFrame for render loop
+    - Create a commit of the latest implementation
+
     - _Requirements: 10.1_
   
   - [ ]* 4.2 Write unit tests for GameLoop timing
     - Test fixed timestep accumulation and alpha calculation
     - _Requirements: 10.1_
 
-- [ ] 5. Implement base Entity class and entity management
-  - [ ] 5.1 Create abstract Entity base class
+
+- [x] 5. Implement base Entity class and entity management
+
+  - [x] 5.1 Create abstract Entity base class
+
     - Implement properties: id, position, velocity, size, active, tags
     - Implement getBounds() method for AABB
     - Implement hasTag() method for entity queries
     - Define abstract update() and render() methods
     - _Requirements: 5.5_
   
-  - [ ] 5.2 Implement entity registry in Engine
+  - [x] 5.2 Implement entity registry in Engine
+
+
     - Create Map<EntityID, Entity> for entity storage
     - Implement spawn() method with unique ID generation
     - Implement despawn() method for entity removal
     - Implement getEntity() and queryEntities() methods
+    - Create a commit of the latest implementation
     - _Requirements: All_
+
 
 - [ ] 6. Implement PhysicsSystem
   - [ ] 6.1 Create PhysicsSystem class with gravity and collision
@@ -99,6 +124,8 @@
     - Implement AABB overlap test
     - Implement collision response callbacks
     - Handle projectile-entity collisions
+    - Create a commit of the latest implementation
+
     - _Requirements: 5.4, 5.5_
   
   - [ ]* 7.2 Write unit tests for collision detection
@@ -135,6 +162,7 @@
     - Create ProjectilePool class with pre-allocated projectiles
     - Implement acquire() and release() methods
     - Integrate pool with WeaponSystem
+    - Create a commit of the latest implementation
     - _Requirements: 10.2_
   
   - [ ]* 9.3 Write unit tests for projectile behavior
@@ -180,6 +208,7 @@
     - Implement dust particle effect spawning
     - Implement particle update (movement, lifetime decay, fade)
     - Implement particle rendering
+    - Create a commit of the latest implementation
     - _Requirements: 3.1, 3.2, 3.3, 10.3_
   
   - [ ]* 12.2 Write unit tests for particle system
