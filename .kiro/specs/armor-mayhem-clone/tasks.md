@@ -161,6 +161,9 @@
     - _Requirements: 2.2, 2.3, 2.4_
 
 - [ ] 9. Implement Projectile entity with object pooling
+
+
+
   - [ ] 9.1 Create Projectile class extending Entity
     - Implement properties: owner, damage, lifetime, speed
     - Implement straight-line movement
@@ -217,7 +220,8 @@
 
 
 - [ ] 12. Implement ParticleSystem with object pooling
-  - [ ] 12.1 Create Particle class and ParticleSystem
+  - [x] 12.1 Create Particle class and ParticleSystem
+
 
     - Implement Particle with position, velocity, lifetime, color, size
     - Implement ParticleSystem with particle pool
@@ -234,7 +238,9 @@
     - _Requirements: 3.1, 3.2, 3.3_
 
 - [ ] 13. Implement sound system
-  - [ ] 13.1 Create SoundManager using Web Audio API
+  - [x] 13.1 Create SoundManager using Web Audio API
+
+
     - Implement sound loading and caching
     - Implement play() method with volume control
     - Load sound effects: shoot, jump, hit, death
@@ -246,12 +252,16 @@
     - _Requirements: 3.4, 3.5, 3.6_
 
 - [ ] 14. Implement LevelManager and level data
-  - [ ] 14.1 Create Level interface and level data structure
+  - [x] 14.1 Create Level interface and level data structure
+
+
     - Define Level interface with platforms, enemySpawns, playerSpawn, bounds
     - Create at least 3 level definitions with different layouts
     - _Requirements: 6.1, 6.5_
   
-  - [ ] 14.2 Create LevelManager class
+  - [x] 14.2 Create LevelManager class
+
+
     - Implement level loading from level data
     - Implement platform spawning
     - Implement enemy spawning at designated positions
@@ -266,7 +276,9 @@
     - _Requirements: 6.2, 6.3, 6.4_
 
 - [ ] 15. Implement camera system
-  - [ ] 15.1 Create Camera class with follow behavior
+  - [x] 15.1 Create Camera class with follow behavior
+
+
     - Implement camera position tracking player
     - Implement deadzone to reduce excessive movement
     - Implement camera bounds constraint within level
@@ -279,7 +291,8 @@
     - _Requirements: 12.1, 12.2, 12.4_
 
 - [ ] 16. Implement Engine core coordination
-  - [ ] 16.1 Create Engine class integrating all systems
+  - [-] 16.1 Create Engine class integrating all systems
+
     - Initialize all systems: PhysicsSystem, CollisionSystem, WeaponSystem, ParticleSystem
     - Implement update() method calling systems in correct order
     - Implement render() method with camera transformation

@@ -19,6 +19,7 @@ export class Enemy extends Entity {
   attackCooldown: number;
   
   private weaponSystem: WeaponSystem;
+  private onShootCallback?: (projectiles: any[]) => void;
   private readonly MOVE_SPEED = 150; // pixels per second
   private readonly ATTACK_COOLDOWN_TIME = 2.0; // seconds between attacks
   private readonly PATROL_WAIT_TIME = 1.0; // seconds to wait at patrol points
@@ -185,7 +186,19 @@ export class Enemy extends Entity {
     const direction = playerCenter.subtract(enemyCenter).normalize();
     
     // Fire weapon through weapon system
-    this.weaponSystem.fire(this.id, enemyCenter, direction);
+    const projectiles = this.weaponSystem.fire(this.id, enemyCenter, direction);
+    
+    // Notify callback if projectiles were spawned
+    if (projectiles.length > 0 && this.onShootCallback) {
+      this.onShootCallback(projectiles);
+    }
+  }
+  
+  /**
+   * Set callback for when enemy shoots
+   */
+  setOnShootCallback(callback: (projectiles: any[]) => void): void {
+    this.onShootCallback = callback;
   }
 
   /**

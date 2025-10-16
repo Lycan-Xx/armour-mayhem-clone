@@ -20,6 +20,7 @@ export class Player extends Entity {
   // Input and systems
   private inputManager: InputManager;
   private weaponSystem: WeaponSystem;
+  private onShootCallback?: (projectiles: any[]) => void;
   
   // Jump mechanics
   private jumpKeyPressed: boolean = false;
@@ -174,7 +175,19 @@ export class Player extends Entity {
     );
     
     // WeaponSystem will handle fire rate, ammo, and projectile spawning
-    this.weaponSystem.fire(this.id, weaponPos, direction);
+    const projectiles = this.weaponSystem.fire(this.id, weaponPos, direction);
+    
+    // Notify callback if projectiles were spawned
+    if (projectiles.length > 0 && this.onShootCallback) {
+      this.onShootCallback(projectiles);
+    }
+  }
+  
+  /**
+   * Set callback for when player shoots
+   */
+  setOnShootCallback(callback: (projectiles: any[]) => void): void {
+    this.onShootCallback = callback;
   }
 
   /**

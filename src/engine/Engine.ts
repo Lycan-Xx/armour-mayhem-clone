@@ -1,5 +1,14 @@
 import { Entity } from '../entities/Entity';
-import { EntityID } from '../types';
+import { Projectile } from '../entities/Projectile';
+import { EntityID, GameState } from '../types';
+import { PhysicsSystem } from '../systems/PhysicsSystem';
+import { CollisionSystem } from '../systems/CollisionSystem';
+import { WeaponSystem } from '../systems/WeaponSystem';
+import { ParticleSystem } from '../systems/ParticleSystem';
+import { ProjectilePool } from '../systems/ProjectilePool';
+import { SoundManager } from '../systems/SoundManager';
+import { Camera } from './Camera';
+import { InputManager } from './InputManager';
 
 /**
  * Engine is the central coordinator for all game systems and entities.
@@ -10,6 +19,20 @@ export class Engine {
   private nextEntityId: EntityID = 1;
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
+  
+  // Systems
+  public physicsSystem: PhysicsSystem;
+  public collisionSystem: CollisionSystem;
+  public weaponSystem: WeaponSystem;
+  public particleSystem: ParticleSystem;
+  public projectilePool: ProjectilePool;
+  public soundManager: SoundManager;
+  public camera: Camera;
+  public inputManager: InputManager;
+  
+  // Game state
+  private gameState: GameState = GameState.PLAYING;
+  private isPaused: boolean = false;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -18,6 +41,25 @@ export class Engine {
       throw new Error('Failed to get 2D rendering context');
     }
     this.ctx = ctx;
+    
+    // Initialize systems
+    this.physicsSystem = new PhysicsSystem();
+    this.collisionSystem = new CollisionSystem();
+    this.weaponSystem = new WeaponSystem();
+    this.particleSystem = new ParticleSystem();
+    this.projectilePool = new ProjectilePool();
+    this.soundManager = new SoundManager();
+    this.camera = new Camera(canvas.width, canvas.height);
+    this.inputManager = new InputManager();
+    
+    // Initialize input manager
+    this.inputManager.initialize(canvas);
+    
+    // Set up collision callbacks
+    this.setupCollisionCallbacks();
+    
+    // Create placeholder sounds
+    this.soundManager.createPlaceholderSounds();
   }
 
   /**
@@ -73,16 +115,63 @@ export class Engine {
   }
 
   /**
+   * Set up collision callbacks between different entity types
+   */
+  private setupCollisionCallbacks(): void {
+    // Projectile hits player
+    this.collisionSystem.onCollision('projectile', 'player', (projectile, player) => {
+      const proj = projectile as Projectile;
+      if (proj.owner !== player.id) {
+        (player as any).takeDamage(proj.damage);
+        proj.deactivate();
+        this.particleSystem.spawnHitSparks(proj.position, proj.velocity.normalize());
+        this.soundManager.playPlaceholder('hit');
+      }
+    });
+    
+    // Projectile hits enemy
+    this.collisionSystem.onCollision('projectile', 'enemy', (projectile, enemy) => {
+      const proj = projectile as Projectile;
+      if (proj.owner !== enemy.id) {
+        (enemy as any).takeDamage(proj.damage);
+        proj.deactivate();
+        this.particleSystem.spawnHitSparks(proj.position, proj.velocity.normalize());
+        this.soundManager.playPlaceholder('hit');
+      }
+    });
+  }
+
+  /**
    * Update all entities and systems for one fixed timestep
    * @param dt - Delta time in seconds (fixed timestep)
    */
   update(dt: number): void {
+    if (this.isPaused) return;
+    
+    // Handle pause input
+    if (this.inputManager.isKeyDown('escape')) {
+      this.togglePause();
+    }
+    
     // Update all active entities
     for (const entity of this.entities.values()) {
       if (entity.active) {
         entity.update(dt);
       }
     }
+    
+    // Update systems
+    const activeEntities = this.getAllEntities();
+    this.physicsSystem.update(activeEntities, dt);
+    this.weaponSystem.update(dt);
+    this.particleSystem.update(dt);
+    this.projectilePool.update();
+    
+    // Handle weapon firing and projectile spawning
+    this.handleProjectileSpawning();
+    
+    // Collision detection
+    this.collisionSystem.detectCollisions(activeEntities);
 
     // Remove inactive entities (cleanup)
     for (const [id, entity] of this.entities.entries()) {
@@ -91,22 +180,42 @@ export class Engine {
       }
     }
   }
+  
+  /**
+   * Handle projectile spawning from weapon system
+   */
+  private handleProjectileSpawning(): void {
+    // This will be called by entities when they fire
+    // For now, projectiles are spawned directly by entities
+  }
 
   /**
    * Render all entities to the canvas
    * @param alpha - Interpolation alpha for smooth rendering (0-1)
    */
   render(alpha: number): void {
-    // Alpha will be used for position interpolation in future updates
     // Clear canvas
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    
+    // Apply camera transformation
+    this.ctx.save();
+    this.camera.applyTransform(this.ctx);
 
-    // Render all active entities
+    // Render all active entities (with culling)
     for (const entity of this.entities.values()) {
       if (entity.active) {
-        entity.render(this.ctx);
+        // Simple culling: only render if roughly on screen
+        if (this.camera.isVisible(entity.position, 100)) {
+          entity.render(this.ctx);
+        }
       }
     }
+    
+    // Render particles
+    this.particleSystem.render(this.ctx);
+    
+    // Reset camera transformation
+    this.ctx.restore();
   }
 
   /**
@@ -135,5 +244,67 @@ export class Engine {
    */
   getEntityCount(): number {
     return this.entities.size;
+  }
+  
+  /**
+   * Spawn a projectile from the pool
+   */
+  spawnProjectile(projectileData: any): void {
+    const projectile = this.projectilePool.acquire(
+      projectileData.position,
+      projectileData.direction,
+      projectileData.owner || 0,
+      projectileData.damage,
+      projectileData.speed
+    );
+    
+    if (projectile) {
+      this.spawn(projectile);
+      this.particleSystem.spawnMuzzleFlash(projectileData.position, projectileData.direction);
+      this.soundManager.playPlaceholder('shoot');
+    }
+  }
+  
+  /**
+   * Toggle pause state
+   */
+  togglePause(): void {
+    this.isPaused = !this.isPaused;
+  }
+  
+  /**
+   * Set pause state
+   */
+  setPaused(paused: boolean): void {
+    this.isPaused = paused;
+  }
+  
+  /**
+   * Check if game is paused
+   */
+  isPausedState(): boolean {
+    return this.isPaused;
+  }
+  
+  /**
+   * Set game state
+   */
+  setGameState(state: GameState): void {
+    this.gameState = state;
+  }
+  
+  /**
+   * Get game state
+   */
+  getGameState(): GameState {
+    return this.gameState;
+  }
+  
+  /**
+   * Cleanup and destroy engine
+   */
+  destroy(): void {
+    this.inputManager.cleanup();
+    this.clear();
   }
 }
