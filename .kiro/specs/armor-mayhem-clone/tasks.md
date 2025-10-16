@@ -181,7 +181,8 @@
     - _Requirements: 5.4_
 
 - [ ] 10. Implement Player entity
-  - [-] 10.1 Create Player class extending Entity
+  - [x] 10.1 Create Player class extending Entity
+
 
     - Implement properties: health, maxHealth, moveSpeed, jumpForce, currentWeapon, weapons, grounded, aimAngle
     - Implement movement with smooth acceleration (WASD input)
@@ -198,6 +199,8 @@
 
 - [ ] 11. Implement Enemy entity with AI
   - [ ] 11.1 Create Enemy class extending Entity
+
+
     - Implement properties: health, aiState, sightRadius, attackRange, patrolPoints, currentPatrolIndex, attackCooldown
     - Implement AI state machine: idle, patrol, chase, attack
     - Implement patrol behavior with waypoint navigation
