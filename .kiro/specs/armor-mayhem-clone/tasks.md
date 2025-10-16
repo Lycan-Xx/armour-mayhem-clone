@@ -425,6 +425,7 @@
   - [ ] 21.2 Add visual polish
     - Implement sprite rotation for player weapon
     - Add health bars above entities
+
     - Add visual feedback for damage (flash effect)
     - Ensure crisp rendering on high-DPI displays
     - _Requirements: 1.3, 10.5_
@@ -432,6 +433,7 @@
 - [ ] 22. Final integration and polish
   - [ ] 22.1 Test complete game flow
     - Test main menu to game transition
+
     - Test level progression through all 3 levels
     - Test pause and resume functionality
     - Test game over and restart
