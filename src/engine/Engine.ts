@@ -191,9 +191,9 @@ export class Engine {
 
   /**
    * Render all entities to the canvas
-   * @param alpha - Interpolation alpha for smooth rendering (0-1)
+   * @param _alpha - Interpolation alpha for smooth rendering (0-1) - reserved for future use
    */
-  render(alpha: number): void {
+  render(_alpha: number): void {
     // Clear canvas
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     

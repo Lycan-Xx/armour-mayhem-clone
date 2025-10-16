@@ -16,7 +16,7 @@ function App() {
   const [lives, setLives] = useState(3);
   
   // Mock HUD data (would be updated from game engine in real implementation)
-  const [hudData, setHudData] = useState({
+  const [hudData] = useState({
     health: 100,
     maxHealth: 100,
     weaponName: 'Pistol',
@@ -36,10 +36,6 @@ function App() {
     setCurrentLevel(level);
     setScore(0);
     setLives(3);
-  };
-
-  const handlePause = () => {
-    setGameState('paused');
   };
 
   const handleResume = () => {

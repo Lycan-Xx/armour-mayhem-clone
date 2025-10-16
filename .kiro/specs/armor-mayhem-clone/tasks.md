@@ -291,7 +291,8 @@
     - _Requirements: 12.1, 12.2, 12.4_
 
 - [ ] 16. Implement Engine core coordination
-  - [-] 16.1 Create Engine class integrating all systems
+  - [x] 16.1 Create Engine class integrating all systems
+
 
     - Initialize all systems: PhysicsSystem, CollisionSystem, WeaponSystem, ParticleSystem
     - Implement update() method calling systems in correct order
@@ -307,7 +308,9 @@
     - _Requirements: All_
 
 - [ ] 17. Implement React UI components
-  - [ ] 17.1 Create GameCanvas component
+  - [x] 17.1 Create GameCanvas component
+
+
     - Create React component with canvas ref
     - Initialize Engine on mount
     - Start GameLoop on mount
@@ -315,7 +318,9 @@
     - Clean up on unmount
     - _Requirements: 10.5_
   
-  - [ ] 17.2 Create HUD component
+  - [x] 17.2 Create HUD component
+
+
     - Display player health bar
     - Display current weapon name
     - Display current ammo count
@@ -323,27 +328,35 @@
     - Display remaining lives
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
   
-  - [ ] 17.3 Create Menu component
+
+  - [x] 17.3 Create Menu component
+
     - Create main menu with start, difficulty select, level select buttons
     - Implement navigation to game on start
     - Style menu with CSS
     - _Requirements: 11.1, 11.2_
   
-  - [ ] 17.4 Create PauseScreen component
+
+  - [x] 17.4 Create PauseScreen component
+
     - Display pause menu when game is paused
     - Implement resume button
     - Implement restart button
     - Implement quit to menu button
     - _Requirements: 8.1, 8.3, 8.4, 8.5_
   
-  - [ ] 17.5 Create GameOverScreen component
+
+  - [x] 17.5 Create GameOverScreen component
+
     - Display game over message
     - Display final score
     - Implement restart button
     - Implement return to menu button
     - _Requirements: 11.3, 11.5_
   
-  - [ ] 17.6 Create LevelCompleteScreen component
+
+  - [x] 17.6 Create LevelCompleteScreen component
+
     - Display level complete message
     - Display level score
     - Implement next level button
@@ -351,7 +364,9 @@
     - _Requirements: 11.4, 11.5_
 
 - [ ] 18. Implement game state management in App
-  - [ ] 18.1 Create App component with state management
+  - [x] 18.1 Create App component with state management
+
+
     - Implement game state: menu, playing, paused, gameOver, levelComplete
     - Implement state transitions between screens
     - Conditionally render components based on game state
@@ -374,13 +389,16 @@
     - Test pause state and update blocking
     - _Requirements: 8.1, 8.2_
 
-- [ ] 20. Implement persistence with localStorage
+- [x] 20. Implement persistence with localStorage
+
+
   - [ ] 20.1 Create StorageManager for save/load
     - Implement saveProgress() method saving to localStorage
     - Implement loadProgress() method loading from localStorage
     - Store best scores per level
     - Store unlocked levels
     - Use JSON format for data
+
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5_
   
   - [ ] 20.2 Integrate persistence with game flow
@@ -391,6 +409,7 @@
   
   - [ ]* 20.3 Write unit tests for storage operations
     - Test save and load with mock localStorage
+
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5_
 
 - [ ] 21. Create placeholder assets and rendering
@@ -398,6 +417,7 @@
     - Render Player as colored rectangle with weapon line
     - Render Enemy as colored rectangle with direction indicator
     - Render Projectile as small circle
+
     - Render platforms as rectangles
     - Render particles as colored circles with alpha
     - _Requirements: All_
