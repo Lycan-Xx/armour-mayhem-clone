@@ -1,6 +1,11 @@
 # Implementation Plan
 
-- [ ] 1. Set up project structure and development environment
+- [x] 1. Set up project structure and development environment
+
+
+
+
+
 
 
 
@@ -11,16 +16,27 @@
   - Install necessary dependencies (React, TypeScript, Vite)
   - _Requirements: 10.5_
 
-- [ ] 2. Implement core math and utility types
-  - [ ] 2.1 Create Vec2 class for 2D vector operations
+- [x] 2. Implement core math and utility types
+
+
+
+
+
+
+  - [x] 2.1 Create Vec2 class for 2D vector operations
+
     - Implement Vec2 with x, y properties and methods: add, subtract, multiply, normalize, length, distance
     - _Requirements: 1.1, 1.3, 5.1_
   
-  - [ ] 2.2 Create Rect class for bounding boxes
+
+  - [x] 2.2 Create Rect class for bounding boxes
+
     - Implement Rect with x, y, width, height and collision detection methods
     - _Requirements: 5.5_
   
-  - [ ] 2.3 Define core type definitions
+  - [x] 2.3 Define core type definitions
+
+
     - Create EntityID type, GameState enum, and common interfaces
     - _Requirements: All_
 
@@ -30,12 +46,13 @@
     - Implement mouse position tracking relative to canvas
     - Implement mouse button state tracking
     - Add event listeners for keydown, keyup, mousemove, mousedown, mouseup
+    - Create a commit of the latest implementation
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
   
   - [ ]* 3.2 Write unit tests for InputManager
     - Test key state tracking and mouse position calculations
     - _Requirements: 1.1, 1.2, 1.3_
-
+    
 - [ ] 4. Implement GameLoop with fixed timestep
   - [ ] 4.1 Create GameLoop class with accumulator pattern
     - Implement fixed 60Hz update rate (16.67ms timestep)
