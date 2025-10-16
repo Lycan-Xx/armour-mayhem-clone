@@ -59,6 +59,13 @@ export class Rect {
   }
 
   /**
+   * Alias for overlaps() - check if this rectangle intersects with another
+   */
+  intersects(other: Rect): boolean {
+    return this.overlaps(other);
+  }
+
+  /**
    * Check if a point is inside this rectangle
    */
   contains(point: Vec2): boolean {
