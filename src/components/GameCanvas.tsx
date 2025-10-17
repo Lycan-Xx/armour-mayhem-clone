@@ -7,14 +7,24 @@ import { getLevel } from '../data/levels';
 interface GameCanvasProps {
   onGameOver?: () => void;
   onLevelComplete?: () => void;
+  onPauseChange?: (isPaused: boolean) => void;
+  onHUDUpdate?: (data: any) => void;
   currentLevel?: number;
+  isPaused?: boolean;
 }
 
-export function GameCanvas({ onGameOver, onLevelComplete, currentLevel = 0 }: GameCanvasProps) {
+export function GameCanvas({ onGameOver, onLevelComplete, onPauseChange, onHUDUpdate, currentLevel = 0, isPaused = false }: GameCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<Engine | null>(null);
   const gameLoopRef = useRef<GameLoop | null>(null);
   const levelManagerRef = useRef<LevelManager | null>(null);
+
+  // Sync isPaused prop with engine pause state
+  useEffect(() => {
+    if (engineRef.current) {
+      engineRef.current.setPaused(isPaused);
+    }
+  }, [isPaused]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -45,6 +55,9 @@ export function GameCanvas({ onGameOver, onLevelComplete, currentLevel = 0 }: Ga
     // Initialize engine
     const engine = new Engine(canvas);
     engineRef.current = engine;
+    
+    // Set initial pause state immediately
+    engine.setPaused(isPaused);
 
     // Initialize level manager
     const levelManager = new LevelManager(
@@ -89,9 +102,21 @@ export function GameCanvas({ onGameOver, onLevelComplete, currentLevel = 0 }: Ga
     document.addEventListener('click', resumeAudio);
     document.addEventListener('keydown', resumeAudio);
 
+    // Set up pause state listener
+    let lastPausedState = false;
+    
     // Create game loop
     const gameLoop = new GameLoop(
       (dt: number) => {
+        // Check if pause state changed
+        const currentPausedState = engine.isPausedState();
+        if (currentPausedState !== lastPausedState) {
+          lastPausedState = currentPausedState;
+          if (onPauseChange) {
+            onPauseChange(currentPausedState);
+          }
+        }
+        
         // Update
         engine.update(dt);
         levelManager.update(dt);
@@ -100,6 +125,20 @@ export function GameCanvas({ onGameOver, onLevelComplete, currentLevel = 0 }: Ga
         const player = levelManager.getPlayer();
         if (player && player.active) {
           engine.camera.follow(player);
+          
+          // Update HUD with real data
+          if (onHUDUpdate) {
+            const weaponState = engine.weaponSystem.getWeaponState(player.id);
+            if (weaponState) {
+              onHUDUpdate({
+                health: player.health,
+                maxHealth: player.maxHealth,
+                weaponName: weaponState.weapon.name,
+                currentAmmo: weaponState.currentAmmo,
+                magazineSize: weaponState.weapon.magazineSize,
+              });
+            }
+          }
         }
       },
       (alpha: number) => {

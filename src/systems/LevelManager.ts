@@ -94,7 +94,13 @@ export class LevelManager {
       }
     });
     
+    // Spawn assigns the real ID
     this.engine.spawn(this.player);
+    
+    // Re-register weapon with the real ID after spawn
+    if (this.player.weapons.length > 0 && this.player.weapons[0]) {
+      this.weaponSystem.registerWeapon(this.player.id, this.player.weapons[0]);
+    }
   }
 
   /**
@@ -118,7 +124,12 @@ export class LevelManager {
       });
       
       this.enemies.push(enemy);
+      
+      // Spawn assigns the real ID
       this.engine.spawn(enemy);
+      
+      // Re-register weapon with the real ID after spawn
+      this.weaponSystem.registerWeapon(enemy.id, WEAPON_PISTOL);
     }
   }
 

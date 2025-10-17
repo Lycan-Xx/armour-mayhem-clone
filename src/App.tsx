@@ -15,8 +15,8 @@ function App() {
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(3);
   
-  // Mock HUD data (would be updated from game engine in real implementation)
-  const [hudData] = useState({
+  // Real HUD data updated from game engine
+  const [hudData, setHudData] = useState({
     health: 100,
     maxHealth: 100,
     weaponName: 'Pistol',
@@ -71,6 +71,14 @@ function App() {
     }
   };
 
+  const handlePauseChange = (isPaused: boolean) => {
+    setGameState(isPaused ? 'paused' : 'playing');
+  };
+
+  const handleHUDUpdate = (data: any) => {
+    setHudData(data);
+  };
+
   const hasNextLevel = currentLevel + 1 < getLevelCount();
 
   return (
@@ -89,6 +97,9 @@ function App() {
           currentLevel={currentLevel}
           onGameOver={handleGameOver}
           onLevelComplete={handleLevelComplete}
+          onPauseChange={handlePauseChange}
+          onHUDUpdate={handleHUDUpdate}
+          isPaused={gameState === 'paused'}
         />
       )}
 
