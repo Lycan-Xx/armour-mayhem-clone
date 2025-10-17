@@ -84,6 +84,9 @@ export class LevelManager {
       ALL_WEAPONS // Give player all weapons
     );
     
+    // Set camera for world coordinate conversion
+    this.player.setCamera(this.engine.camera);
+    
     // Set shoot callback to spawn projectiles
     this.player.setOnShootCallback((projectiles) => {
       for (const proj of projectiles) {

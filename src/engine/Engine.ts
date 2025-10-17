@@ -146,11 +146,15 @@ export class Engine {
    * @param dt - Delta time in seconds (fixed timestep)
    */
   update(dt: number): void {
-    if (this.isPaused) return;
-    
-    // Handle pause input
-    if (this.inputManager.isKeyDown('escape')) {
+    // Handle pause input (check before paused state so we can unpause)
+    if (this.inputManager.isKeyPressed('escape')) {
       this.togglePause();
+    }
+    
+    if (this.isPaused) {
+      // Update input states even when paused
+      this.inputManager.updateKeyStates();
+      return;
     }
     
     // Update all active entities
@@ -179,6 +183,9 @@ export class Engine {
         this.entities.delete(id);
       }
     }
+    
+    // Update input key states for next frame
+    this.inputManager.updateKeyStates();
   }
   
   /**
@@ -201,6 +208,9 @@ export class Engine {
     this.ctx.save();
     this.camera.applyTransform(this.ctx);
 
+    // Render platforms
+    this.renderPlatforms();
+
     // Render all active entities (with culling)
     for (const entity of this.entities.values()) {
       if (entity.active) {
@@ -216,6 +226,34 @@ export class Engine {
     
     // Reset camera transformation
     this.ctx.restore();
+  }
+
+  /**
+   * Render all platforms
+   */
+  private renderPlatforms(): void {
+    const platforms = this.physicsSystem.getPlatforms();
+    
+    for (const platform of platforms) {
+      // Different colors for one-way vs solid platforms
+      if (platform.oneWay) {
+        this.ctx.fillStyle = '#3A3A5A'; // Darker purple for one-way platforms
+        this.ctx.strokeStyle = '#5A5A8A'; // Lighter purple border
+      } else {
+        this.ctx.fillStyle = '#2A2A4A'; // Dark blue for solid platforms
+        this.ctx.strokeStyle = '#4A4A6A'; // Lighter blue border
+      }
+      
+      // Draw platform
+      this.ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+      this.ctx.strokeRect(platform.x, platform.y, platform.width, platform.height);
+      
+      // Add a subtle gradient effect for one-way platforms to show direction
+      if (platform.oneWay) {
+        this.ctx.fillStyle = 'rgba(90, 90, 138, 0.3)';
+        this.ctx.fillRect(platform.x, platform.y, platform.width, 3);
+      }
+    }
   }
 
   /**

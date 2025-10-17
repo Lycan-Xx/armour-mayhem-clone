@@ -1,4 +1,5 @@
 import { Vec2 } from '../types/Vec2';
+import type { Camera } from './Camera';
 
 /**
  * InputManager handles all keyboard and mouse input for the game.
@@ -6,6 +7,7 @@ import { Vec2 } from '../types/Vec2';
  */
 export class InputManager {
   private keys: Map<string, boolean> = new Map();
+  private previousKeys: Map<string, boolean> = new Map();
   private mousePos: Vec2 = new Vec2(0, 0);
   private mouseButtons: Map<number, boolean> = new Map();
   private canvas: HTMLCanvasElement | null = null;
@@ -110,10 +112,39 @@ export class InputManager {
   }
 
   /**
-   * Get the current mouse position relative to the canvas
+   * Check if a key was just pressed this frame (not held)
+   * @param key - The key to check (case-insensitive)
+   */
+  isKeyPressed(key: string): boolean {
+    const keyLower = key.toLowerCase();
+    const current = this.keys.get(keyLower) || false;
+    const previous = this.previousKeys.get(keyLower) || false;
+    return current && !previous;
+  }
+
+  /**
+   * Update previous key states (call this at the end of each update cycle)
+   */
+  updateKeyStates(): void {
+    this.previousKeys.clear();
+    for (const [key, value] of this.keys.entries()) {
+      this.previousKeys.set(key, value);
+    }
+  }
+
+  /**
+   * Get the current mouse position relative to the canvas (screen coordinates)
    */
   getMousePosition(): Vec2 {
     return this.mousePos.clone();
+  }
+
+  /**
+   * Get the mouse position in world coordinates
+   * @param camera - The camera to use for coordinate conversion
+   */
+  getWorldMousePosition(camera: Camera): Vec2 {
+    return camera.screenToWorld(this.mousePos);
   }
 
   /**

@@ -3,6 +3,7 @@ import { Vec2 } from '../types/Vec2';
 import { EntityID, WeaponDef } from '../types';
 import { InputManager } from '../engine/InputManager';
 import { WeaponSystem } from '../systems/WeaponSystem';
+import type { Camera } from '../engine/Camera';
 
 /**
  * Player entity controlled by keyboard and mouse input.
@@ -20,6 +21,7 @@ export class Player extends Entity {
   // Input and systems
   private inputManager: InputManager;
   private weaponSystem: WeaponSystem;
+  private camera?: Camera;
   private onShootCallback?: (projectiles: any[]) => void;
   
   // Jump mechanics
@@ -121,10 +123,21 @@ export class Player extends Entity {
   }
 
   /**
+   * Set the camera for world coordinate conversion
+   */
+  setCamera(camera: Camera): void {
+    this.camera = camera;
+  }
+
+  /**
    * Handle aiming toward mouse cursor
    */
   private handleAiming(): void {
-    const mousePos = this.inputManager.getMousePosition();
+    // Get mouse position in world coordinates
+    const mousePos = this.camera 
+      ? this.inputManager.getWorldMousePosition(this.camera)
+      : this.inputManager.getMousePosition();
+    
     const playerCenter = new Vec2(
       this.position.x + this.size.x / 2,
       this.position.y + this.size.y / 2
@@ -151,11 +164,8 @@ export class Player extends Entity {
    * Handle weapon swapping
    */
   private handleWeaponSwap(): void {
-    const swapKey = this.inputManager.isKeyDown('f');
-    
-    // Simple debounce: only swap on key press (not hold)
-    // This is a simplified version - a proper implementation would track key state changes
-    if (swapKey) {
+    // Use isKeyPressed to only swap on initial key press, not while held
+    if (this.inputManager.isKeyPressed('f')) {
       this.swapWeapon();
     }
   }
