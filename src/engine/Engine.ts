@@ -121,19 +121,21 @@ export class Engine {
     // Projectile hits player
     this.collisionSystem.onCollision('projectile', 'player', (projectile, player) => {
       const proj = projectile as Projectile;
-      if (proj.owner !== player.id) {
-        (player as any).takeDamage(proj.damage);
+      // Only apply damage if player is a Player instance and has takeDamage
+      if (proj.owner !== player.id && typeof player.takeDamage === 'function') {
+        player.takeDamage(proj.damage);
         proj.deactivate();
         this.particleSystem.spawnHitSparks(proj.position, proj.velocity.normalize());
         this.soundManager.playPlaceholder('hit');
       }
     });
-    
+
     // Projectile hits enemy
     this.collisionSystem.onCollision('projectile', 'enemy', (projectile, enemy) => {
       const proj = projectile as Projectile;
-      if (proj.owner !== enemy.id) {
-        (enemy as any).takeDamage(proj.damage);
+      // Only apply damage if enemy is an Enemy instance and has takeDamage
+      if (proj.owner !== enemy.id && typeof enemy.takeDamage === 'function') {
+        enemy.takeDamage(proj.damage);
         proj.deactivate();
         this.particleSystem.spawnHitSparks(proj.position, proj.velocity.normalize());
         this.soundManager.playPlaceholder('hit');

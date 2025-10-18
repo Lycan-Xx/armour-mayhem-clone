@@ -10,6 +10,17 @@ export default defineConfig({
     allowedHosts: [
       "f83a00fc-44ca-43c7-b5f5-cdc115750140-00-1r55vhssli5hv.kirk.repl.co",
     ],
-    hmr: { clientPort: 443, protocol: "wss" },
+    hmr: {
+      clientPort: 443,
+      protocol: "wss",
+      overlay: true,
+    },
+    watch: {
+      usePolling: true,
+      interval: 300,
+    },
+  },
+  build: {
+    watch: {},
   },
 });

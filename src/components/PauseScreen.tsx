@@ -70,7 +70,7 @@ export function PauseScreen({ onResume, onRestart, onQuit }: PauseScreenProps) {
             fontWeight: 'bold',
           }}
         >
-          QUIT TO MENU
+          RETURN TO MAIN MENU
         </button>
       </div>
 

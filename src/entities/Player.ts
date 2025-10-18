@@ -154,8 +154,8 @@ export class Player extends Entity {
    */
   private handleShooting(): void {
     const fireButton = this.inputManager.isMouseButtonDown(0); // Left mouse button
-    
-    if (fireButton) {
+
+    if (fireButton && this.active) {
       this.shoot();
     }
   }

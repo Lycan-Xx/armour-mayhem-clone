@@ -30,6 +30,12 @@ export abstract class Entity {
   abstract update(dt: number): void;
 
   /**
+   * Take damage (must be implemented by subclasses that can take damage)
+   * @param amount - Amount of damage to apply
+   */
+  abstract takeDamage(amount: number): void;
+
+  /**
    * Render the entity to the canvas
    * @param ctx - Canvas rendering context
    */

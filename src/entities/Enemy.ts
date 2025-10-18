@@ -152,7 +152,16 @@ export class Enemy extends Entity {
   private doChase(player: Player): void {
     const direction = player.position.subtract(this.position).normalize();
     this.velocity.x = direction.x * this.MOVE_SPEED;
-    // Y velocity is handled by physics (gravity/jumping would be added here)
+
+    // Check if enemy needs to jump over obstacles
+    const playerY = player.position.y;
+    const enemyY = this.position.y;
+
+    // If player is significantly higher and enemy is grounded, try to jump
+    if (playerY < enemyY - 20 && this.hasTag('grounded')) {
+      this.velocity.y = -400; // Jump force
+      this.removeTag('grounded');
+    }
   }
 
   /**
