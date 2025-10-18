@@ -133,16 +133,20 @@ export class Player extends Entity {
    * Handle aiming toward mouse cursor
    */
   private handleAiming(): void {
+    // Always require camera for proper world coordinate conversion
+    if (!this.camera) {
+      console.warn('[Player] Camera not set, aiming disabled');
+      return;
+    }
+
     // Get mouse position in world coordinates
-    const mousePos = this.camera 
-      ? this.inputManager.getWorldMousePosition(this.camera)
-      : this.inputManager.getMousePosition();
-    
+    const mousePos = this.inputManager.getWorldMousePosition(this.camera);
+
     const playerCenter = new Vec2(
       this.position.x + this.size.x / 2,
       this.position.y + this.size.y / 2
     );
-    
+
     // Calculate angle from player to mouse
     const dx = mousePos.x - playerCenter.x;
     const dy = mousePos.y - playerCenter.y;
@@ -153,8 +157,11 @@ export class Player extends Entity {
    * Handle weapon firing
    */
   private handleShooting(): void {
+    // Don't fire if camera isn't set (aiming won't work)
+    if (!this.camera) return;
+
     const fireButton = this.inputManager.isMouseButtonDown(0); // Left mouse button
-    
+
     if (fireButton) {
       this.shoot();
     }

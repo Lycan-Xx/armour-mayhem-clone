@@ -7,6 +7,7 @@ import { WeaponSystem } from '../systems/WeaponSystem';
 import { ParticleSystem } from '../systems/ParticleSystem';
 import { ProjectilePool } from '../systems/ProjectilePool';
 import { SoundManager } from '../systems/SoundManager';
+import { DebugRenderer } from '../systems/DebugRenderer';
 import { Camera } from './Camera';
 import { InputManager } from './InputManager';
 
@@ -29,10 +30,14 @@ export class Engine {
   public soundManager: SoundManager;
   public camera: Camera;
   public inputManager: InputManager;
-  
+  public debugRenderer: DebugRenderer;
+
   // Game state
   private gameState: GameState = GameState.PLAYING;
   private isPaused: boolean = false;
+  private lastFrameTime: number = 0;
+  private frameCount: number = 0;
+  private fps: number = 0;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -51,6 +56,7 @@ export class Engine {
     this.soundManager = new SoundManager();
     this.camera = new Camera(canvas.width, canvas.height);
     this.inputManager = new InputManager();
+    this.debugRenderer = new DebugRenderer();
     
     // Initialize input manager
     this.inputManager.initialize(canvas);
@@ -149,10 +155,18 @@ export class Engine {
     // Handle pause input (check before paused state so we can unpause)
     if (this.inputManager.isKeyPressed('escape')) {
       this.togglePause();
+      // Update key states immediately after toggle to prevent re-triggering
+      this.inputManager.updateKeyStates();
+      return;
     }
-    
+
+    // Handle debug toggle
+    if (this.inputManager.isKeyPressed('g')) {
+      this.debugRenderer.toggle();
+    }
+
     if (this.isPaused) {
-      // Update input states even when paused
+      // Update input states even when paused to detect unpause
       this.inputManager.updateKeyStates();
       return;
     }
@@ -223,9 +237,38 @@ export class Engine {
     
     // Render particles
     this.particleSystem.render(this.ctx);
-    
+
+    // Render debug overlays (in world space)
+    if (this.debugRenderer.isEnabled()) {
+      this.debugRenderer.renderEntityDebug(this.ctx, Array.from(this.entities.values()));
+      this.debugRenderer.renderPhysicsDebug(this.ctx, this.physicsSystem);
+    }
+
     // Reset camera transformation
     this.ctx.restore();
+
+    // Render debug info (in screen space)
+    if (this.debugRenderer.isEnabled()) {
+      const player = this.queryEntities(e => e.hasTag('player'))[0];
+      this.debugRenderer.renderDebugInfo(this.ctx, {
+        fps: this.fps,
+        entityCount: this.entities.size,
+        playerX: player?.position.x,
+        playerY: player?.position.y,
+        playerVelX: player?.velocity.x,
+        playerVelY: player?.velocity.y,
+        playerGrounded: player?.hasTag('grounded')
+      });
+    }
+
+    // Calculate FPS
+    this.frameCount++;
+    const currentTime = performance.now();
+    if (currentTime - this.lastFrameTime >= 1000) {
+      this.fps = Math.round(this.frameCount * 1000 / (currentTime - this.lastFrameTime));
+      this.frameCount = 0;
+      this.lastFrameTime = currentTime;
+    }
   }
 
   /**
@@ -308,13 +351,21 @@ export class Engine {
    */
   togglePause(): void {
     this.isPaused = !this.isPaused;
+    // Reset input states when pausing/unpausing to prevent buffered inputs
+    this.inputManager.reset();
+    console.log(`[Engine] Game ${this.isPaused ? 'paused' : 'resumed'}`);
   }
   
   /**
    * Set pause state
    */
   setPaused(paused: boolean): void {
-    this.isPaused = paused;
+    if (this.isPaused !== paused) {
+      this.isPaused = paused;
+      // Reset input states when pausing/unpausing
+      this.inputManager.reset();
+      console.log(`[Engine] Game ${this.isPaused ? 'paused' : 'resumed'}`);
+    }
   }
   
   /**
